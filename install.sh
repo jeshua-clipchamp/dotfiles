@@ -10,3 +10,7 @@ ln -s "$PWD/.gitconfig" "$HOME/.gitconfig"
 ln -s "$PWD/.zsh" "$HOME/.zsh"
 ln -s "$PWD/.zshrc" "$HOME/.zshrc"
 ln -s "$PWD/bin" "$HOME/bin"
+
+# Install some common packages.
+sudo apt install -y snapd
+sudo snap install --classic code
