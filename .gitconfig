@@ -1,0 +1,16 @@
+[user]
+	email = jeshua@clipchamp.com
+	name = Jeshua Morrissey
+[filter "lfs"]
+	clean = git-lfs clean -- %f
+	smudge = git-lfs smudge -- %f
+	process = git-lfs filter-process
+	required = true
+[alias]
+    close = !git-close.sh
+    pull-branch = !git-pull-branch.sh
+    cam = commit -a -m
+[pager]
+	branch = false
+[github]
+	pr-token = 03cd6b068d46b65cf1536c7763723142436624c4

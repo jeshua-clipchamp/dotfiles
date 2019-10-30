@@ -1,0 +1,10 @@
+#!/bin/bash
+
+# Kill current sessions.
+if screen -list | grep -q "start-create"; then
+    screen -q -X -S start-create kill
+fi
+
+if screen -list | grep -q "webserver-gae"; then
+    screen -q -X -S webserver-gae kill
+fi
