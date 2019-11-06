@@ -1,0 +1,27 @@
+#!/bin/bash
+
+BASE=$(pwd)
+
+# Make sure we are in a repo.
+if [ ! -f "package.json" ]; then
+    echo "Should be run at the root of the clipchamp-stack repo (package.json file missing)."
+    exit 1
+fi
+
+# Make sure we are in the right repo.
+PACKAGE_NAME=$(cat package.json | jq -r ".name")
+if [ "$PACKAGE_NAME" != "clipchamp-stack" ]; then
+    echo "Should only be run in the clipchamp-stack repo (not $PACKAGE_NAME)."
+    exit 1
+fi
+
+# Build.
+cd "$BASE/libs/shared-js" && npm run build
+cd "$BASE/frontend/apps/create" && npx lingui compile
+cd "$BASE/frontend" && npm run ng-high-memory -- build create -c custom
+
+# Deploy frontend.
+cd "$BASE/frontend" && npx ng run create:deploy
+
+# Deploy backend.
+cd "$BASE" && npx gulp deploy:custom-v2
