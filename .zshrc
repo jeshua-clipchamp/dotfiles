@@ -123,15 +123,10 @@ export SCREENDIR=$HOME/.screen
 
 # Setup ssh agent on Windows
 if grep -qE "(Microsoft|WSL)" /proc/version &> /dev/null ; then
-    if [ -z "$(pgrep ssh-agent)" ]; then
-        rm -rf /tmp/ssh-*
-        eval $(ssh-agent -s) > /dev/null
-    else
-        export SSH_AGENT_PID=$(pgrep ssh-agent)
-        export SSH_AUTH_SOCK=$(find /tmp/ssh-* -name "agent.*")
-    fi
-    ssh-add
+    eval ``keychain --eval --agents ssh id_rsa
 fi
+
+
 
 
 
