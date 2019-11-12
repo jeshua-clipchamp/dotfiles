@@ -148,6 +148,7 @@ function ws() {
 
     if [ -d "${WS_DIR?}" ]; then
         cd "${WS_DIR?}/clipchamp-stack"
+        workon "${WS_NAME?}"
         return
     fi
 
@@ -158,11 +159,15 @@ function ws() {
         "clipchamp-stack"
     )
 
+    mkvirtualenv "${WS_NAME?}"
+    workon "${WS_NAME?}"
     for repo in "${repos[@]}"; do
         if [ ! -d "${WS_DIR?}/${repo?}" ]; then
             git clone "git@github.com:clipchamp/${repo?}.git" "${WS_DIR?}/${repo?}"
+            cd "${WS_DIR?}/${repo?}" && ./installRequirements.sh
         fi
     done
 
     cd "${WS_DIR?}/clipchamp-stack"
+    workon "${WS_NAME?}"
 }
