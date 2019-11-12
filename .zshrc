@@ -133,3 +133,36 @@ if grep -qE "(Microsoft|WSL)" /proc/version &> /dev/null ; then
     ssh-add
 fi
 
+
+
+# Custom functions.
+function ws() {
+    WS_NAME=$1
+
+    if [ -z "${WS_NAME?}" ]; then
+        echo "Usage: make-workspace {name}"
+        return
+    fi
+
+    WS_DIR="$HOME/work/workspace/${WS_NAME?}"
+
+    if [ -d "${WS_DIR?}" ]; then
+        cd "${WS_DIR?}/clipchamp-stack"
+        return
+    fi
+
+    echo "Making new workspace ${WS_NAME?}..."
+    mkdir -p "${WS_DIR?}"
+
+    repos=(
+        "clipchamp-stack"
+    )
+
+    for repo in "${repos[@]}"; do
+        if [ ! -d "${WS_DIR?}/${repo?}" ]; then
+            git clone "git@github.com:clipchamp/${repo?}.git" "${WS_DIR?}/${repo?}"
+        fi
+    done
+
+    cd "${WS_DIR?}/clipchamp-stack"
+}
