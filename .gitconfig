@@ -10,6 +10,7 @@
     close = !git-close.sh
     pull-branch = !git-pull-branch.sh
     cam = commit -a -m
+    camp = !git-camp.sh
 [pager]
 	branch = false
 [github]
