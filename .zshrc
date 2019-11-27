@@ -122,8 +122,9 @@ fpath=($HOME/.zsh/completion $fpath)
 export SCREENDIR=$HOME/.screen
 
 # Setup ssh agent on Windows
-if grep -qE "(Microsoft|WSL)" /proc/version &> /dev/null ; then
-    export SSH_AUTH_SOCK=/mnt/c/Users/jeshu/.ssh/ssh-agent.sock
+if grep -qE "(microsoft|Microsoft|WSL)" /proc/version &> /dev/null ; then
+    keychain --nogui "${HOME?}/.ssh/id_rsa"
+    source "${HOME?}/.keychain/${HOST?}-sh"
 fi
 
 # Custom functions.
