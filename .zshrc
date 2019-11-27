@@ -126,10 +126,6 @@ if grep -qE "(Microsoft|WSL)" /proc/version &> /dev/null ; then
     eval ``keychain --eval --agents ssh id_rsa
 fi
 
-
-
-
-
 # Custom functions.
 function ws() {
     WS_NAME=$1
