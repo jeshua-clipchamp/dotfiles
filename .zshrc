@@ -24,7 +24,7 @@ ZSH_THEME="jeshua"
 # HYPHEN_INSENSITIVE="true"
 
 # Uncomment the following line to disable bi-weekly auto-update checks.
-# DISABLE_AUTO_UPDATE="true"
+DISABLE_AUTO_UPDATE="true"
 
 # Uncomment the following line to automatically update without prompting.
 # DISABLE_UPDATE_PROMPT="true"
@@ -99,7 +99,7 @@ source $ZSH/oh-my-zsh.sh
 # alias ohmyzsh="mate ~/.oh-my-zsh"
 
 # Add custom utilities to the path.
-PATH="$PATH:/snap/bin:$HOME/bin"
+PATH="/snap/bin:$HOME/bin:$PATH"
 
 # Required for virtualenvwrapper.
 export WORKON_HOME=~/.virtualenvs/
@@ -132,8 +132,8 @@ function ws() {
     WS_NAME=$1
 
     if [ -z "${WS_NAME?}" ]; then
-        echo "Usage: make-workspace {name}"
-        return
+        WS_NAME="main"
+        echo "Using default workspace name 'main'"
     fi
 
     WS_DIR="$HOME/work/workspace/${WS_NAME?}"
@@ -149,6 +149,8 @@ function ws() {
 
     repos=(
         "clipchamp-stack"
+        "clipchamp-docs"
+        "devtools"
     )
 
     mkvirtualenv "${WS_NAME?}"
@@ -160,6 +162,6 @@ function ws() {
         fi
     done
 
-    cd "${WS_DIR?}/clipchamp-stack"
+    cd "${WS_DIR?}"
     workon "${WS_NAME?}"
 }
