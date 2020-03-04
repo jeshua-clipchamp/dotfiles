@@ -1,0 +1,7 @@
+#!/usr/bin/zsh
+
+
+JEST_CONFIG=`pwd`/frontend/apps/create/jest.config.js
+TEST_SETUP=`pwd`/frontend/apps/create/src/test-setup.ts
+
+node frontend/node_modules/jest/bin/jest.js --no-cache --runInBand --coverage=false --config="${JEST_CONFIG?}" --setupTestFrameworkScriptFile="${TEST_SETUP?}" $@

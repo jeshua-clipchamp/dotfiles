@@ -82,14 +82,16 @@ def main(args: argparse.Namespace):
         cmd = f'git checkout {child_pr.head.ref} && git town sync'
         print(f'  RUN `{cmd}`')
         if not args.dry_run:
+            # This may fail with merge conflicts; that is OK, we can automatically resolve them.
+            # If this does fail, it is because git didn't detect the squashed merge correctly.
             # This will always fail with merge conflicts; that is OK.
-            subprocess.run(cmd, shell=True, check=False)
-
-        # There will be a merge conflict, guaranteed, so we have to manually merge then continue.
-        cmd = f'git checkout --ours . && git commit -a --no-edit && git town continue'
-        print(f'  RUN `{cmd}`')
-        if not args.dry_run:
-            subprocess.check_call(cmd, shell=True, cwd=local_repo.working_tree_dir)
+            try:
+                subprocess.check_call(cmd, shell=True, check=False)
+            except subprocess.CalledProcessError:
+                cmd = f'git checkout --ours . && git commit -a --no-edit && git town continue'
+                print(f'  RUN `{cmd}`')
+                if not args.dry_run:
+                    subprocess.run(cmd, shell=True, cwd=local_repo.working_tree_dir)
 
     # Step 5: Sync all to update all dependencies.
     cmd = f'git town sync --all'
