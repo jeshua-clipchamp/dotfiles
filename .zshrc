@@ -2,7 +2,7 @@
 export PATH=$HOME/bin:$HOME/.local/bin:/usr/local/bin:$PATH
 
 # Path to your oh-my-zsh installation.
-export ZSH="/home/jeshua/.oh-my-zsh"
+export ZSH="/home/jeshua-work/.oh-my-zsh"
 
 # Set name of the theme to load --- if set to "random", it will
 # load a random theme each time oh-my-zsh is loaded, in which case,
@@ -115,6 +115,7 @@ export NVM_DIR="$HOME/.nvm"
 
 # For using custom dev project
 export CUSTOM_GAE_PROJECT_ID="clipchamp-dev-jeshua-vhhro"
+export GOOGLE_APPLICATION_CREDENTIALS="$HOME/.config/gcloud/legacy_credentials/jeshua@zfaas.com/adc.json"
 
 # Custom completion
 fpath=($HOME/.zsh/completion $fpath)

@@ -10,8 +10,8 @@ import git
 from typing import Text
 
 
-def update_children(args: argparse.Namespace, repo: github.Repository, base_ref: Text,
-                    child_prs: github.PaginatedList):
+def update_children(args: argparse.Namespace, repo: github.Repository,
+                    base_ref: Text, child_prs: github.PaginatedList):
     for child_pr in child_prs:
         cmd = f'git checkout {child_pr.head.ref} && git merge {base_ref} --ours --no-edit && git push'
         print(f'  RUN `{cmd}`')
@@ -25,7 +25,9 @@ def update_children(args: argparse.Namespace, repo: github.Repository, base_ref:
 
 def main(args: argparse.Namespace):
     if args.dry_run:
-        print('NOTE: dry_run is enabled, nothing will be done. Run with --nodry_run to actuate.')
+        print(
+            'NOTE: dry_run is enabled, nothing will be done. Run with --nodry_run to actuate.'
+        )
 
     local_repo = git.Repo(os.getcwd(), search_parent_directories=True)
 
@@ -35,7 +37,9 @@ def main(args: argparse.Namespace):
     # Check: make sure that this PR is going to be merged into master.
     pr_to_merge = repo.get_pull(args.pr[0])
     if pr_to_merge.base.ref != 'master':
-        print(f"ERROR: PR {args.pr[0]} is not going to merge into master, don't know what to do.")
+        print(
+            f"ERROR: PR {args.pr[0]} is not going to merge into master, don't know what to do."
+        )
         return 1
 
     # Check: make sure the PR is mergable.
@@ -58,15 +62,20 @@ def main(args: argparse.Namespace):
             config_var = f'git-town-branch.{child_pr.head.ref}.parent'
             print(f'  SET {config_var} --> master')
             if not args.dry_run:
-                subprocess.check_call(shlex.split(f'git config {config_var} master'))
+                subprocess.check_call(
+                    shlex.split(f'git config {config_var} master'))
 
     # Step 2: Merge the PR using github.
     message = f'{pr_to_merge.title} (#{pr_to_merge.number})'
     print(f'MERGE {pr_to_merge.html_url} with commit message "{message}"...')
     if not args.dry_run:
-        result = pr_to_merge.merge(commit_message='', commit_title=message, merge_method='squash')
+        result = pr_to_merge.merge(commit_message='',
+                                   commit_title=message,
+                                   merge_method='squash')
         if not result.merged:
-            print(f'ERROR: Could not merge {pr_to_merge.url_html}: {result.message}')
+            print(
+                f'ERROR: Could not merge {pr_to_merge.url_html}: {result.message}'
+            )
             return 1
 
     # Step 3: Prune all deleted branches (which should now include the thing we just merged).
@@ -86,37 +95,41 @@ def main(args: argparse.Namespace):
             # If this does fail, it is because git didn't detect the squashed merge correctly.
             # This will always fail with merge conflicts; that is OK.
             try:
-                subprocess.check_call(cmd, shell=True, check=False)
+                subprocess.check_call(cmd, shell=True)
             except subprocess.CalledProcessError:
                 cmd = f'git checkout --ours . && git commit -a --no-edit && git town continue'
                 print(f'  RUN `{cmd}`')
                 if not args.dry_run:
-                    subprocess.run(cmd, shell=True, cwd=local_repo.working_tree_dir)
+                    subprocess.run(cmd,
+                                   shell=True,
+                                   cwd=local_repo.working_tree_dir)
 
     # Step 5: Sync all to update all dependencies.
-    cmd = f'git town sync --all'
-    print(f'  RUN `{cmd}`')
-    if not args.dry_run:
-        subprocess.run(shlex.split(cmd))
+    # cmd = f'git town sync --all'
+    # print(f'  RUN `{cmd}`')
+    # if not args.dry_run:
+    #     subprocess.run(shlex.split(cmd))
 
     return 0
 
 
 if __name__ == '__main__':
-    parser = argparse.ArgumentParser(description='Merge the head of a chain of PRs')
+    parser = argparse.ArgumentParser(
+        description='Merge the head of a chain of PRs')
     parser.add_argument(
         '--token',
         help='The GitHub developer token. It must have `repo` access.',
         type=str,
         default='118b15cddddd8551c4dc21cb9a1ecff661df8b43')
     parser.add_argument('pr', help='The PR to merge.', type=int, nargs=1)
-    parser.add_argument(
-        '--repo', help='The GitHub repo.', type=str, default='clipchamp/clipchamp-stack')
-    parser.add_argument(
-        '--nodry_run',
-        help='If set, no write actions will be taken.',
-        dest='dry_run',
-        action='store_false')
+    parser.add_argument('--repo',
+                        help='The GitHub repo.',
+                        type=str,
+                        default='clipchamp/clipchamp-stack')
+    parser.add_argument('--nodry_run',
+                        help='If set, no write actions will be taken.',
+                        dest='dry_run',
+                        action='store_false')
     parser.set_defaults(dry_run=False)
 
     sys.exit(main(parser.parse_args()))
