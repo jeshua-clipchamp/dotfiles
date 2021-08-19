@@ -1,1 +1,0 @@
-git cam "." && git push

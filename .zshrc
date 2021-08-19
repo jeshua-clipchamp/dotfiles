@@ -99,70 +99,7 @@ source $ZSH/oh-my-zsh.sh
 # alias ohmyzsh="mate ~/.oh-my-zsh"
 
 # Add custom utilities to the path.
-PATH="/snap/bin:$HOME/bin:$PATH"
-
-# Required for virtualenvwrapper.
-export WORKON_HOME=~/.virtualenvs/
-mkdir -p $WORKON_HOME
-
-# Setup virtualenvwrapper
-source virtualenvwrapper.sh
-
-# Setup NVM directory.
-export NVM_DIR="$HOME/.nvm"
-[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
-[ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
-
-# For using custom dev project
-export CUSTOM_GAE_PROJECT_ID="clipchamp-dev-jeshua-vhhro"
-export GOOGLE_APPLICATION_CREDENTIALS="$HOME/.config/gcloud/legacy_credentials/jeshua@zfaas.com/adc.json"
+PATH="$HOME/bin:$PATH"
 
 # Custom completion
 fpath=($HOME/.zsh/completion $fpath)
-
-export SCREENDIR=$HOME/.screen
-
-# Setup ssh agent on Windows
-if grep -qE "(microsoft|Microsoft|WSL)" /proc/version &> /dev/null ; then
-    keychain --nogui "${HOME?}/.ssh/id_rsa"
-    source "${HOME?}/.keychain/${HOST?}-sh"
-fi
-
-# Custom functions.
-function ws() {
-    WS_NAME=$1
-
-    if [ -z "${WS_NAME?}" ]; then
-        WS_NAME="main"
-        echo "Using default workspace name 'main'"
-    fi
-
-    WS_DIR="$HOME/work/workspace/${WS_NAME?}"
-
-    if [ -d "${WS_DIR?}" ]; then
-        cd "${WS_DIR?}/clipchamp-stack"
-        workon "${WS_NAME?}"
-        return
-    fi
-
-    echo "Making new workspace ${WS_NAME?}..."
-    mkdir -p "${WS_DIR?}"
-
-    repos=(
-        "clipchamp-stack"
-        "clipchamp-docs"
-        "devtools"
-    )
-
-    mkvirtualenv "${WS_NAME?}"
-    workon "${WS_NAME?}"
-    for repo in "${repos[@]}"; do
-        if [ ! -d "${WS_DIR?}/${repo?}" ]; then
-            git clone "git@github.com:clipchamp/${repo?}.git" "${WS_DIR?}/${repo?}"
-            cd "${WS_DIR?}/${repo?}" && ./installRequirements.sh
-        fi
-    done
-
-    cd "${WS_DIR?}"
-    workon "${WS_NAME?}"
-}

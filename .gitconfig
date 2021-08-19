@@ -7,16 +7,9 @@
 	process = git-lfs filter-process
 	required = true
 [alias]
-    close = !git-close.sh
-    pull-branch = !git-pull-branch.sh
-    cam = commit -a -m
-    camp = !git-camp.sh
+    cam = !git commit -a -m '.'
+    camp = !git cam && git push
+	campn = !git cam --no-verify && git push
     squash-branch = !git reset $(git merge-base master $(git rev-parse --abbrev-ref HEAD))
-    merge-parent-pr = !git-merge-parent-pr.sh
 [pager]
 	branch = false
-[github]
-	pr-token = 03cd6b068d46b65cf1536c7763723142436624c4
-	user = jeshua-clipchamp
-[ghi]
-	token = 118b15cddddd8551c4dc21cb9a1ecff661df8b43
